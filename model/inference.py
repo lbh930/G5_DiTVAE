@@ -1,5 +1,5 @@
-import torchvision.utils as vutils
 import torch
+import torchvision.utils as vutils
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 T = 1000  # total diffusion steps
@@ -28,7 +28,7 @@ def generate_high_res(model, low_res_img, text_prompt, guidance_scale=7.5, steps
     # We will use a reduced number of inference steps for speed (e.g., steps=50 vs training T=1000).
     # Define a schedule of timesteps to iterate (e.g., linear spacing or use a predefined scheduler).
     # Here we use linear step spacing for simplicity:
-    step_indices = torch.linspace(model.time_embedder.embed_dim - 1, 0, steps, dtype=torch.long, device=device)  # from T-1 to 0
+    step_indices = torch.linspace(T - 1, 0, steps, dtype=torch.long, device=device)  # from T-1 to 0
     step_indices = step_indices.tolist()  # list of timesteps to go through
     
     # Start from pure noise at timestep T-1 (highest noise level)

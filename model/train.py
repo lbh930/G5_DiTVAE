@@ -7,8 +7,9 @@ import torchvision
 # Hyperparameters
 num_epochs = 100
 learning_rate = 1e-4
-batch_size = 8
+batch_size = 4
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device("cuda:1")
 
 # Initialize dataset and dataloader
 train_dataset = COCODataset(image_dir="../data/coco/images/train2017", caption_file="../data/coco/annotations/captions_train2017.json", image_size=256, low_res_factor=4)
@@ -17,7 +18,7 @@ train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
 val_loader   = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
 
 # Initialize model, optimizer, and loss
-model = ConditionalDiT(image_size=256, patch_size=4, in_channels=3, hidden_dim=768, depth=12, num_heads=12)
+model = ConditionalDiT(image_size=256, patch_size=8, in_channels=3, hidden_dim=768, depth=12, num_heads=12)
 model = model.to(device)
 optimizer = optim.AdamW(model.parameters(), lr=learning_rate)
 

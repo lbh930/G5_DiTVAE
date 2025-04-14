@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from transformers import T5EncoderModel, T5Tokenizer
 import timm
 
@@ -12,6 +13,10 @@ class LowResImageEncoder(nn.Module):
         # Freeze ViT if desired (can be fine-tuned as well)
         # for p in self.vit.parameters():
         #     p.requires_grad = False
+        
+        # Ensure output is embed_dim rather than 1000 dimensions of classification
+        self.vit.head = nn.Identity()
+        
         # The embed_dim should match the ViT's output embed dim (e.g., 768 for vit_base_patch16_224)
         self.embed_dim = embed_dim
 
@@ -22,6 +27,10 @@ class LowResImageEncoder(nn.Module):
         """
         # The timm ViT model returns the class token embedding by default when trained for classification.
         # We ensure the model is in evaluation mode for inference of features.
+        
+        # resize to fit DiT input
+        x = F.interpolate(x, size=(224, 224), mode="bilinear")
+        
         self.vit.eval()
         with torch.no_grad():
             # timm ViT forward will give class token embedding if we access vit(x) directly (if it's set up for classification).
