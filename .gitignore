@@ -1,1 +1,3 @@
 data/*
+model/nohup.out
+model/__pycache__/

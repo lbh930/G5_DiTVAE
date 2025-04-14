@@ -59,7 +59,20 @@ def diffusion_loss(model, low_res, high_res, captions):
     return loss
 
 # Training loop
+
+print("Starting training...")
+print (f"Using device: {device}")
+print (f"Number of epochs: {num_epochs}")
+print (f"Batch size: {batch_size}")
+print (f"Learning rate: {learning_rate}")
+print (f"Training on {len(train_dataset)} samples")
+print (f"Validation on {len(val_dataset)} samples")
+print (f"Training on {len(train_loader)} batches")
+print (f"Validation on {len(val_loader)} batches")
+
+
 for epoch in range(num_epochs):
+    print (f"Training Epoch {epoch+1}/{num_epochs}")
     model.train()
     total_loss = 0.0
     for batch_idx, (low_res, high_res, captions) in enumerate(train_loader):
@@ -74,9 +87,12 @@ for epoch in range(num_epochs):
         total_loss += loss.item()
         # Print training status periodically
         if batch_idx % 100 == 0:
-            print(f"Epoch {epoch} Iter {batch_idx}: Loss = {loss.item():.4f}")
+            print(f"Epoch {epoch} Iter {batch_idx}: Loss = {loss.item():.4f}", flush=True)
     avg_loss = total_loss / len(train_loader)
     print(f"Epoch {epoch} completed. Average training loss: {avg_loss:.4f}")
+    
+    # save model to ../checkpoints
+    torch.save(model.state_dict(), f"../checkpoints/epoch_{epoch}.pth")
     
     # --- Validation ---
     model.eval()
